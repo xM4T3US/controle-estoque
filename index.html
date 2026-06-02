@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#141b26" />
+  <meta name="description" content="Controle de Estoque — conferência física digital, offline e instalável." />
+  <title>Controle de Estoque</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="icon" href="icons/icon-192.png" />
+
+  <!-- Bootstrap 5 + Ícones + Fontes — TUDO LOCAL (100% offline) -->
+  <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+  <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="vendor/fonts/fonts.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="app-header">
+    <button class="hamb" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu">
+      <i class="bi bi-list"></i>
+    </button>
+    <div class="brand">
+      <i class="bi bi-box-seam-fill brand-icon"></i>
+      <div class="brand-text">
+        <span class="brand-title">CONTROLE DE ESTOQUE</span>
+        <span class="brand-sub">Conferência física digital</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="hm-item"><i class="bi bi-calendar3"></i><span id="hdrData">--/--/----</span></div>
+      <div class="hm-item"><i class="bi bi-clock"></i><span id="hdrHora">--:--:--</span></div>
+      <div class="hm-item hm-turno"><span id="hdrTurno">—</span></div>
+    </div>
+  </header>
+
+  <!-- ============ SIDEBAR (OFFCANVAS) ============ -->
+  <div class="offcanvas offcanvas-start ce-sidebar" tabindex="-1" id="sidebar">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title"><i class="bi bi-grid-1x2-fill"></i> Menu</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <nav class="side-nav">
+        <a href="#" class="nav-item active" data-nav="registro"><i class="bi bi-plus-square"></i> Novo Registro</a>
+        <a href="#" class="nav-item" data-action="editar"><i class="bi bi-pencil-square"></i> Editar Registros</a>
+        <a href="#" class="nav-item" data-nav="historico"><i class="bi bi-clock-history"></i> Histórico</a>
+        <a href="#" class="nav-item" data-nav="pesquisa"><i class="bi bi-search"></i> Pesquisar Rua</a>
+        <a href="#" class="nav-item" data-nav="dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <hr />
+        <a href="#" class="nav-item" data-action="importar"><i class="bi bi-upload"></i> Importar JSON</a>
+        <a href="#" class="nav-item" data-action="exportar-json"><i class="bi bi-download"></i> Exportar JSON</a>
+        <a href="#" class="nav-item" data-action="config"><i class="bi bi-gear"></i> Configurações</a>
+        <hr />
+        <a href="#" class="nav-item" data-action="tema"><i class="bi bi-moon-stars"></i> Tema Escuro</a>
+      </nav>
+      <div class="side-foot">
+        <span><i class="bi bi-person-badge"></i> Líder: <strong>Mateus</strong></span>
+        <span class="offline-pill"><i class="bi bi-wifi-off"></i> Funciona offline</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="app-main">
+
+    <!-- ============ VIEW: REGISTRO ============ -->
+    <section id="view-registro" class="view view--active">
+      <div class="card-panel">
+        <div class="panel-head">
+          <h2 id="formTitulo"><i class="bi bi-clipboard-check"></i> Nova conferência</h2>
+        </div>
+        <form id="formRegistro" class="conf-form" autocomplete="off" novalidate>
+          <div class="form-grid">
+            <div class="fld">
+              <label for="f-rua">Rua *</label>
+              <input type="text" id="f-rua" placeholder="Ex.: L07, G19, N34" maxlength="12" required />
+            </div>
+            <div class="fld fld-wide">
+              <label for="f-produto">Produto *</label>
+              <input type="text" id="f-produto" placeholder="Ex.: Carrara PT-2" maxlength="80" required />
+            </div>
+            <div class="fld">
+              <label for="f-sistema">Qt. Sistema *</label>
+              <input type="number" id="f-sistema" inputmode="numeric" placeholder="0" required />
+            </div>
+            <div class="fld">
+              <label for="f-fisico">Qt. Física *</label>
+              <input type="number" id="f-fisico" inputmode="numeric" placeholder="0" required />
+            </div>
+            <div class="fld fld-diff">
+              <label>Diferença</label>
+              <div id="f-diff-preview" class="diff-badge diff-zero">—</div>
+            </div>
+            <div class="fld">
+              <label for="f-operador">Operador *</label>
+              <select id="f-operador" required>
+                <option value="">Selecione…</option>
+                <option value="André">André</option>
+                <option value="Valdemir">Valdemir</option>
+                <option value="Felipe">Felipe</option>
+              </select>
+            </div>
+            <div class="fld">
+              <label for="f-lider">Líder</label>
+              <input type="text" id="f-lider" value="Mateus" readonly />
+            </div>
+            <div class="fld">
+              <label for="f-data">Data</label>
+              <input type="text" id="f-data" readonly />
+            </div>
+            <div class="fld">
+              <label for="f-hora">Horário</label>
+              <input type="text" id="f-hora" readonly />
+            </div>
+            <div class="fld">
+              <label for="f-turno">Turno</label>
+              <input type="text" id="f-turno" readonly />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" id="btnSalvar" class="btn btn-primary"><i class="bi bi-save2"></i> Salvar registro</button>
+            <button type="button" id="btnCancelarEdicao" class="btn btn-ghost d-none"><i class="bi bi-x-lg"></i> Cancelar edição</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-head panel-head--row">
+          <h2><i class="bi bi-table"></i> Registros <span class="counter" id="contadorRegistros">0</span></h2>
+          <div class="toolbar">
+            <div class="search-box">
+              <i class="bi bi-search"></i>
+              <input type="text" id="buscaGlobal" placeholder="Buscar rua, produto, operador…" />
+            </div>
+            <div class="toolbar-btns">
+              <button class="btn btn-outline btn-sm" id="tbExportJson" title="Exportar JSON"><i class="bi bi-filetype-json"></i></button>
+              <button class="btn btn-outline btn-sm" id="tbExportCsv" title="Exportar CSV"><i class="bi bi-filetype-csv"></i></button>
+              <button class="btn btn-outline btn-sm" id="tbExportPdf" title="Exportar PDF"><i class="bi bi-filetype-pdf"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rua</th><th>Produto</th><th class="num">Sistema</th><th class="num">Físico</th>
+                <th class="num">Dif.</th><th>Operador</th><th>Líder</th><th>Data</th><th>Turno</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaRegistros"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: HISTÓRICO ============ -->
+    <section id="view-historico" class="view">
+      <div class="card-panel">
+        <div class="panel-head"><h2><i class="bi bi-clock-history"></i> Histórico de conferências</h2></div>
+        <p class="hint">Cada cartão representa um arquivo <code>AAAA-MM-DD_TURNO.json</code> agrupando todas as conferências do dia/turno.</p>
+        <div id="listaHistorico" class="hist-list"></div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: PESQUISA RUA ============ -->
+    <section id="view-pesquisa" class="view">
+      <div class="card-panel">
+        <div class="panel-head"><h2><i class="bi bi-search"></i> Pesquisar Rua</h2></div>
+        <div class="filtros-grid">
+          <div class="fld"><label for="p-rua">Rua *</label><input type="text" id="p-rua" placeholder="Ex.: L07" /></div>
+          <div class="fld"><label for="p-dataIni">Data inicial</label><input type="date" id="p-dataIni" /></div>
+          <div class="fld"><label for="p-dataFim">Data final</label><input type="date" id="p-dataFim" /></div>
+          <div class="fld">
+            <label for="p-operador">Operador (opcional)</label>
+            <select id="p-operador">
+              <option value="">Todos</option>
+              <option value="André">André</option>
+              <option value="Valdemir">Valdemir</option>
+              <option value="Felipe">Felipe</option>
+            </select>
+          </div>
+          <div class="fld fld-btn">
+            <button class="btn btn-primary w-100" id="btnPesquisar"><i class="bi bi-search"></i> Pesquisar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-head panel-head--row">
+          <h2><i class="bi bi-clipboard-data"></i> Resumo</h2>
+          <div id="pesquisaExport" class="toolbar-btns d-none">
+            <button class="btn btn-outline btn-sm" onclick="exportarPesquisa('csv')"><i class="bi bi-filetype-csv"></i> CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="exportarPesquisa('pdf')"><i class="bi bi-filetype-pdf"></i> PDF</button>
+          </div>
+        </div>
+        <div id="pesquisaResumo"><p class="txt-muted mb-0">Faça uma pesquisa para ver o resumo.</p></div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-head"><h2><i class="bi bi-list-ul"></i> Resultados</h2></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr>
+              <th>Data</th><th>Turno</th><th>Rua</th><th>Produto</th>
+              <th class="num">Sistema</th><th class="num">Físico</th><th class="num">Dif.</th><th>Operador</th><th>Líder</th>
+            </tr></thead>
+            <tbody id="pesquisaResultados"><tr><td colspan="9" class="empty-row">—</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-head"><h2><i class="bi bi-exclamation-diamond"></i> Histórico de divergências</h2></div>
+        <div id="pesquisaDivergencias"><p class="txt-muted mb-0">—</p></div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-head"><h2><i class="bi bi-stack"></i> Auditoria da Rua</h2></div>
+        <div id="pesquisaAuditoria" class="timeline"><p class="txt-muted">—</p></div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: DASHBOARD ============ -->
+    <section id="view-dashboard" class="view">
+      <div class="card-panel">
+        <div class="panel-head"><h2><i class="bi bi-speedometer2"></i> Dashboard — Hoje</h2></div>
+        <div class="dash-grid">
+          <div class="stat-card sc-blue">
+            <div class="sc-ico"><i class="bi bi-clipboard-check"></i></div>
+            <div class="sc-body"><span class="sc-val" id="dashConferencias">0</span><span class="sc-lbl">Conferências do dia</span></div>
+          </div>
+          <div class="stat-card sc-teal">
+            <div class="sc-ico"><i class="bi bi-box-seam"></i></div>
+            <div class="sc-body"><span class="sc-val" id="dashProdutos">0</span><span class="sc-lbl">Produtos conferidos</span></div>
+          </div>
+          <div class="stat-card sc-red">
+            <div class="sc-ico"><i class="bi bi-exclamation-diamond"></i></div>
+            <div class="sc-body"><span class="sc-val" id="dashDivergencias">0</span><span class="sc-lbl">Divergências</span></div>
+          </div>
+          <div class="stat-card sc-amber">
+            <div class="sc-ico"><i class="bi bi-percent"></i></div>
+            <div class="sc-body"><span class="sc-val" id="dashTaxa">0%</span><span class="sc-lbl">Taxa de divergência</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-panel">
+        <div class="panel-head"><h2><i class="bi bi-graph-up"></i> Resumo geral</h2></div>
+        <div class="resumo-grid">
+          <div class="resumo-item"><span>Total de conferências</span><strong id="dashTotalGeral">0</strong></div>
+          <div class="resumo-item"><span>Total de divergências</span><strong id="dashDivGeral" class="txt-danger">0</strong></div>
+          <div class="resumo-item"><span>Taxa geral</span><strong id="dashTaxaGeral">0%</strong></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ RODAPÉ MJ TECH ============ -->
+  <footer class="site-footer">
+    <p>© <span id="currentYear"></span> MJ Tech — Todos os direitos reservados.</p>
+    <p class="site-footer-links">
+      <a href="https://wa.me/5519995189387" target="_blank" rel="noopener">
+        <i class="bi bi-whatsapp"></i> Contato</a>
+      <span class="sep">·</span>
+      <a href="https://mjtech.net.br" target="_blank" rel="noopener">
+        <i class="bi bi-globe2"></i> mjtech.net.br</a>
+    </p>
+    <p class="site-footer-dev">
+      Desenvolvido por
+      <a href="https://github.com/xM4T3US" target="_blank" rel="noopener">
+        <i class="bi bi-github"></i> Mateus Junior</a>
+    </p>
+  </footer>
+
+  <!-- ============ MODAL: EDITAR REGISTROS ============ -->
+  <div class="modal fade" id="modalEditar" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content ce-modal">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Editar Registros</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="search-box mb-3">
+            <i class="bi bi-search"></i>
+            <input type="text" id="editBusca" placeholder="Pesquisar registro (rua, produto, operador…)" />
+          </div>
+          <div id="editLista" class="edit-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: CONFIGURAÇÕES ============ -->
+  <div class="modal fade" id="modalConfig" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content ce-modal">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-gear"></i> Configurações</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="cfg-row"><span><i class="bi bi-database"></i> Dados armazenados</span><code id="cfgBackupInfo">—</code></div>
+          <div class="cfg-row"><span><i class="bi bi-palette"></i> Tema atual</span><strong id="cfgThemeState">Claro</strong></div>
+          <hr />
+          <p class="hint mb-2">Relatórios completos</p>
+          <div class="cfg-btns">
+            <button class="btn btn-outline btn-sm" id="cfgCsv"><i class="bi bi-filetype-csv"></i> Exportar CSV</button>
+            <button class="btn btn-outline btn-sm" id="cfgPdf"><i class="bi bi-filetype-pdf"></i> Exportar PDF</button>
+          </div>
+          <hr />
+          <button class="btn btn-outline btn-sm d-none w-100 mb-2" id="btnInstalar"><i class="bi bi-phone"></i> Instalar aplicativo</button>
+          <button class="btn btn-danger-soft btn-sm w-100" id="cfgLimpar"><i class="bi bi-trash3"></i> Apagar todos os dados</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- input oculto p/ importação -->
+  <input type="file" id="inputImport" accept="application/json,.json" hidden />
+
+  <!-- container de toasts -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Bibliotecas — LOCAIS (offline) -->
+  <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="vendor/jspdf/jspdf.umd.min.js"></script>
+  <script src="vendor/jspdf/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Módulos da aplicação -->
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
