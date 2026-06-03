@@ -1,0 +1,8 @@
+# Roteia /api/* para index.php, preservando o caminho em ?route=
+# Sem RewriteBase fixo: funciona em qualquer subpasta.
+RewriteEngine On
+
+# Se o arquivo/dir físico não existir, manda para o index.php desta pasta
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]

@@ -1,0 +1,14 @@
+# Dados em runtime — NUNCA versionar
+/database/**/*.json
+/database/sessions/
+/database/auth.json
+!/database/.htaccess
+
+# Ferramenta de setup (não publicar credenciais/escrita)
+# (mantida no repo como referência; remova do servidor após uso)
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+*.tmp

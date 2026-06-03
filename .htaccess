@@ -1,0 +1,16 @@
+# ===== Controle de Estoque (PHP) — Apache =====
+RewriteEngine On
+
+# Bloqueia acesso direto à pasta de dados (JSON, backups, logs, locks)
+RewriteRule ^database/ - [F,L]
+
+# Não reescrever /api (tem seu próprio .htaccess)
+RewriteRule ^api/ - [L]
+
+# Arquivos/dirs reais são servidos normalmente
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Demais navegações -> index.html (PWA)
+RewriteRule ^ index.html [L]
